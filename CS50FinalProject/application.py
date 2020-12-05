@@ -136,6 +136,7 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
+        session["admin"] = rows[0]["admin"]
 
         # Redirect user to home page
         return redirect("/")
