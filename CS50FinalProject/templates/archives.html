@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Archives
+{% endblock %}
+
+{% block main %}
+    <!--add the signup message: Sign Up for Week _ \n Date-->
+    <form action="/archives" method="post" autocomplete="off">
+        <div class="form-group">
+            <input class="form-control" name="name" placeholder="Name" type="text">
+            <input class="form-control" name="note" placeholder="Note (Optional)" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+{% endblock %}
