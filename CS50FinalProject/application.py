@@ -94,7 +94,7 @@ def index():
                         session.get("user_id"), week_id, note)
         # ADMIN USERNAME: admin // PASSWORD: test (if you want to test out admin features!)
         elif admin == 1:
-            week = request.form.get("week")
+            week = int(request.form.get("week"))
             if not week:
                 return render_template("apology.html", top = 400, bottom = "Please enter the week number.")
             month = request.form.get("month")
@@ -110,6 +110,8 @@ def index():
             if not zoom_link:
                 return render_template("apology.html", top = 400, bottom = "Please enter the Zoom link for this meeting.")
             #TODO: make this an update command instead to avoid duplicates DONE
+            # app.logger.info(weeks)
+            # print(week)
             if week in weeks:
                 db.execute("UPDATE weeks SET (year, month, day, zoom_link) = (?, ?, ?, ?) WHERE id = ?", year, month, day, zoom_link, week)
             else:
