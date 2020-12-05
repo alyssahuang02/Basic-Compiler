@@ -12,6 +12,13 @@ h1 .cursive
     font-family: 'Playball', cursive;
     color: #398DAA;
 }
+h2 .cursive
+{
+    font-family: 'Playball', cursive;
+    color: #398DAA;
+    padding-top: 20;
+    padding-bottom: 10;
+}
 a:hover
 {
     text-decoration: none;

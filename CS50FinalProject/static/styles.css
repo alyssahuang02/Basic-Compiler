@@ -25,13 +25,32 @@
     font-weight: bold;
     /*font-family: 'Yellowtail', cursive;*/
 }
+h2
+{
+    font-family: 'American Typewriter', cursive;
+    color: #0ABA9B;
+}
+h3
+{
+    font-family: 'Chalkduster', cursive;
+}
 
 .btn-primary
 {
     background-color: #0ABA9B;
     border-color: #0ABA9B;
 }
+.btn-outline-primary
+{
+    /* background-color: #0ABA9B; */
+    border-color: #0ABA9B;
+    color: #0ABA9B;
+}
 .btn-primary:hover
+{
+    background-color: #279D8E;
+}
+.btn-outline-primary:hover
 {
     background-color: #279D8E;
 }
@@ -51,6 +70,13 @@
     width: 100%;
     height:50px;
     vertical-align:middle;
+}
+
+.table
+{
+    width: 70%;
+    margin-left:auto;
+    margin-right:auto
 }
 
 /*form*/
@@ -97,4 +123,10 @@ main img
 {
     /* Constrain images on small screens */
     max-width: 100%;
+}
+
+.week
+{
+  padding-top: 30px;
+  padding-bottom: 15px;
 }

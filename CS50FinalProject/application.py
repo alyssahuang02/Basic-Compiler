@@ -50,17 +50,48 @@ def index():
     weeks = []
     for elem in weeks_db:
         weeks.append(elem['id'])
+    # a dictionary where week IDs are keys
+    roster = {}
+    for week in weeks:
+        date_db = db.execute("SELECT month, day, year FROM weeks WHERE id= ?", week)
+        month = date_db[0]['month']
+        day = date_db[0]['day']
+        year = date_db[0]['year']
+        date = [month, day, year]
+        signups_for_the_week = []
+        signups_for_the_week.append(date)
+        roster_element_db = db.execute("SELECT firstname, lastname, id FROM users WHERE id IN (SELECT user_id FROM signups WHERE week_id = ?)", week)
+        for signup in roster_element_db:
+            mentor_name_first = signup['firstname']
+            mentor_name_last = signup['lastname']
+            note_access = db.execute("SELECT note FROM signups WHERE user_id = ? AND week_id = ?", signup['id'], week)
+            note = note_access[0]['note']
+            self = False
+            if signup['id'] == session['user_id']:
+                self = True
+            signup_list = [mentor_name_first, mentor_name_last, note, self]
+            signups_for_the_week.append(signup_list)
+        roster[week] = signups_for_the_week
+
     if request.method == "POST":
         if admin == 0:
-            name = request.form.get("name")
-            if not name:
-                return render_template("apology.html", top = 400, bottom = "Please enter your name.")
-            note = request.form.get("note")
-            if not note:
-                note = ""
-            week_id = request.form.get("week")
-            db.execute("INSERT INTO signups (user_id, week_id, note) VALUES(?, ?, ?)",
-                       session.get("user_id"), week_id, note)
+            if request.form.get("week-delete"):
+                week_id_delete = request.form.get('week-delete')
+                first_delete = request.form.get('firstname-delete')
+                last_delete = request.form.get('lastname-delete')
+                user_id_delete = db.execute("SELECT id FROM users WHERE firstname = ? AND lastname = ?", first_delete, last_delete)
+                user_id_delete = user_id_delete[0]['id']
+                db.execute("DELETE FROM signups WHERE (week_id, user_id) = (?,?)", week_id_delete, user_id_delete)
+            else:
+                name = request.form.get("name")
+                if not name:
+                    return render_template("apology.html", top = 400, bottom = "Please enter your name.")
+                note = request.form.get("note")
+                if not note:
+                    note = ""
+                week_id = request.form.get("week")
+                db.execute("INSERT INTO signups (user_id, week_id, note) VALUES(?, ?, ?)",
+                        session.get("user_id"), week_id, note)
         # ADMIN USERNAME: admin // PASSWORD: test (if you want to test out admin features!)
         elif admin == 1:
             week = request.form.get("week")
@@ -79,31 +110,13 @@ def index():
             if not zoom_link:
                 return render_template("apology.html", top = 400, bottom = "Please enter the Zoom link for this meeting.")
             #TODO: make this an update command instead to avoid duplicates DONE
-            if week not in weeks:
+            if week in weeks:
                 db.execute("UPDATE weeks SET (year, month, day, zoom_link) = (?, ?, ?, ?) WHERE id = ?", year, month, day, zoom_link, week)
             else:
+                # Apparently adding a new week doesn't work
                 db.execute("INSERT INTO weeks (id, year, month, day, zoom_link) VALUES(?, ?, ?, ?, ?)",
                         week, year, month, day, zoom_link)
         return redirect("/")
-
-    # a dictionary where week IDs are keys
-    roster = {}
-    for week in weeks:
-        date_db = db.execute("SELECT month, day, year FROM weeks WHERE id= ?", week)
-        month = date_db[0]['month']
-        day = date_db[0]['day']
-        year = date_db[0]['year']
-        date = (month, day, year)
-        signups_for_the_week = []
-        signups_for_the_week.append(date)
-        roster_element_db = db.execute("SELECT firstname, lastname, id FROM users WHERE id IN (SELECT user_id FROM signups WHERE week_id = ?)", week)
-        for signup in roster_element_db:
-            note_access = db.execute("SELECT note FROM signups WHERE user_id = ? AND week_id = ?", signup['id'], week)
-            mentor_name = signup['firstname'] + ' ' + signup['lastname']
-            note = note_access[0]['note']
-            signup_tuple = (mentor_name, note)
-            signups_for_the_week.append(signup_tuple)
-        roster[week] = signups_for_the_week
 
     return render_template("index.html", roster=roster, weeks=weeks, admin=admin)
 
