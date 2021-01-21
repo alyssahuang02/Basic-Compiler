@@ -1,0 +1,26 @@
+x = x + 3 / 5 - y
+y = z % 5                       
+    z =    x   + y
+xyzzy          =           303    
+  $^)(@ 
+ //blablablablabla
+byte
+  baudy
+    bit
+       and
+           branch            
+VAR x;
+PROCEDURE square(n);
+BEGIN
+RETURN n * n;
+END;
+BEGIN
+x := 1;
+WHILE x <= 10 DO
+BEGIN
+WRITELN(square(x));
+x := x + 1;
+END;
+END;
+=
+.
